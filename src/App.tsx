@@ -3,6 +3,7 @@ import { Canvas, extend, useFrame } from '@react-three/fiber';
 import { OrbitControls, TorusKnot, Box, Sphere, Stats, useGLTF } from '@react-three/drei';
 import Dropdown from './components/Dropdown';
 import { Outline } from './components/Outline';
+import { EffectComposer, Bloom} from "@react-three/postprocessing";
 import * as THREE from 'three';
 import * as Shaders from './shaders/shaders';
 
@@ -40,6 +41,7 @@ const AnimatedGeometry: React.FC<AnimatedGeometryProps> = ({ geometry, material 
 const App: React.FC = () => {
   const [selectedGeometry, setSelectedGeometry] = useState<GeometryType>('TorusKnot');
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialType>(Object.keys(Shaders)[0] as MaterialType);
+  const [useShaders, setUseShaders] = useState(false);
 
   const geometries: Record<GeometryType, React.ElementType> = {
     TorusKnot: TorusKnot,
@@ -62,6 +64,21 @@ const App: React.FC = () => {
           value={selectedMaterial}
           onChange={(value) => setSelectedMaterial(value as MaterialType)}
         />
+        <button
+          style={{
+            marginTop: 10,
+            padding: '10px 20px',
+            fontSize: '16px',
+            background: '#4caf50',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
+          onClick={() => setUseShaders((prev) => !prev)}
+        >
+          Toggle Shaders
+        </button>
       </div>
       <Canvas>
         {/* Lighting */}
@@ -79,6 +96,17 @@ const App: React.FC = () => {
 
         {/* Stats */}
         <Stats />
+
+        {/* Postprocessing Effects */}
+        {useShaders && (
+          <EffectComposer>
+            <Bloom
+              intensity={2}
+              luminanceThreshold={0.4}
+              luminanceSmoothing={0.9}
+            />
+          </EffectComposer>
+        )}
       </Canvas>
     </div>
   );
