@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
-import { OrbitControls, TorusKnot, Box, Sphere, Stats, useGLTF } from '@react-three/drei';
+import { OrbitControls, TorusKnot, Box, Sphere, Stats, useGLTF, Outlines, Suzi } from '@react-three/drei';
 import Dropdown from './components/Dropdown';
+import ToggleButton from './components/ToggleButton';
 import { Outline } from './components/Outline';
 import { EffectComposer, Bloom} from "@react-three/postprocessing";
 import * as THREE from 'three';
@@ -34,13 +35,14 @@ const AnimatedGeometry: React.FC<AnimatedGeometryProps> = ({ geometry, material 
     <GeometryComponent args={[1, 0.4, 128, 32]}>
       {/* @ts-ignore */}
       {React.createElement(material, { ref: ref, attach: 'material', uColor: new THREE.Color(0xff6600) })}
+      <Outlines thickness={5} color={"black"} />
     </GeometryComponent>
   );
 };
 
 const App: React.FC = () => {
   const [selectedGeometry, setSelectedGeometry] = useState<GeometryType>('TorusKnot');
-  const [selectedMaterial, setSelectedMaterial] = useState<MaterialType>(Object.keys(Shaders)[0] as MaterialType);
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialType>(Object.keys(Shaders)[2] as MaterialType);
   const [useShaders, setUseShaders] = useState(false);
 
   const geometries: Record<GeometryType, React.ElementType> = {
@@ -64,21 +66,7 @@ const App: React.FC = () => {
           value={selectedMaterial}
           onChange={(value) => setSelectedMaterial(value as MaterialType)}
         />
-        <button
-          style={{
-            marginTop: 10,
-            padding: '10px 20px',
-            fontSize: '16px',
-            background: '#4caf50',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-          }}
-          onClick={() => setUseShaders((prev) => !prev)}
-        >
-          Toggle Shaders
-        </button>
+        <ToggleButton onClick={() => setUseShaders((prev) => !prev)} label="Toggle Shaders" />
       </div>
       <Canvas>
         {/* Lighting */}
@@ -90,6 +78,12 @@ const App: React.FC = () => {
           geometry={geometries[selectedGeometry]}
           material={selectedMaterial}
         />
+
+        {/* <mesh castShadow receiveShadow >
+          <torusKnotGeometry args={[0.5, 0.15, 128, 128]} />
+          <meshStandardMaterial />
+          <Outlines thickness={10} color={"black"} />
+        </mesh> */}
 
         {/* Controls */}
         <OrbitControls />
