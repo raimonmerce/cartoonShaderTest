@@ -4,7 +4,7 @@ import { OrbitControls, TorusKnot, Box, Sphere, Stats, useGLTF, Outlines } from 
 import Dropdown from './components/Dropdown';
 import Checkbox from './components/Checkbox';
 import AnimatedGeometry from './components/AnimatedGeometry';
-import GlbAssetProps from './components/GlbAsset';
+import GlbAsset from './components/GlbAsset';
 import RotatingLightSlider from './components/RotatingLightSlider';
 import { EffectComposer, Bloom} from "@react-three/postprocessing";
 import * as Shaders from './shaders/shaders';
@@ -41,9 +41,10 @@ const App: React.FC = () => {
         <AnimatedGeometry
           geometry={geometries[selectedGeometry]}
           material={selectedMaterial}
+          lightPosition={lightPosition}
         />
 
-        <GlbAssetProps 
+        <GlbAsset 
           url={'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/suzanne-high-poly/model.gltf'} 
           lightPosition={lightPosition}
         />

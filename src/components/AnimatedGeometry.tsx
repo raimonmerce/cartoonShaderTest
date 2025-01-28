@@ -6,24 +6,25 @@ import * as THREE from 'three';
 interface AnimatedGeometryProps {
   geometry: React.ElementType;
   material: string;
+  lightPosition: THREE.Vector3;
 }
 
-const AnimatedGeometry: React.FC<AnimatedGeometryProps> = ({ geometry, material }) => {
+const AnimatedGeometry: React.FC<AnimatedGeometryProps> = ({ geometry, material, lightPosition }) => {
 
   const GeometryComponent = geometry;
+  
 
   const component = (
     <GeometryComponent args={[1, 0.4, 128, 32]}>
       {/* @ts-ignore */}
       {React.createElement(material, {
         attach: 'material',
-        uColor: new THREE.Color(0xff6600),
+        uColor: new THREE.Color(0xffff00),
+        uLightPosition: lightPosition,
       })}
       <Outlines thickness={5} color="black" />
     </GeometryComponent>
   );
-
-  //console.log('AnimatedGeometry Component:', component);
 
   return component;
 };
