@@ -1,12 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
-import { OrbitControls, TorusKnot, Box, Sphere, Stats, useGLTF, Outlines, Suzi } from '@react-three/drei';
+import { OrbitControls, TorusKnot, Box, Sphere, Stats, useGLTF, Outlines } from '@react-three/drei';
 import Dropdown from './components/Dropdown';
-import ToggleButton from './components/ToggleButton';
-import { Outline } from './components/Outline';
+import Checkbox from './components/Checkbox';
+import AnimatedGeometry from './components/AnimatedGeometry';
+import GlbAssetProps from './components/GlbAsset';
 import { EffectComposer, Bloom} from "@react-three/postprocessing";
-import * as THREE from 'three';
 import * as Shaders from './shaders/shaders';
+import avatarGbl from './assets/avatar.glb';
 
 Object.entries(Shaders).forEach(([key, shader]) => {
   extend({ [key]: shader });
@@ -15,35 +16,11 @@ Object.entries(Shaders).forEach(([key, shader]) => {
 type GeometryType = 'TorusKnot' | 'Box' | 'Sphere';
 type MaterialType = keyof typeof Shaders;
 
-interface AnimatedGeometryProps {
-  geometry: React.ElementType;
-  material: string;
-}
-
-const AnimatedGeometry: React.FC<AnimatedGeometryProps> = ({ geometry, material }) => {
-  const ref = useRef<any>();
-
-  useFrame(({ clock }) => {
-    if (ref.current) {
-      ref.current.uTime = clock.getElapsedTime();
-    }
-  });
-
-  const GeometryComponent = geometry;
-
-  return (
-    <GeometryComponent args={[1, 0.4, 128, 32]}>
-      {/* @ts-ignore */}
-      {React.createElement(material, { ref: ref, attach: 'material', uColor: new THREE.Color(0xff6600) })}
-      <Outlines thickness={5} color={"black"} />
-    </GeometryComponent>
-  );
-};
-
 const App: React.FC = () => {
   const [selectedGeometry, setSelectedGeometry] = useState<GeometryType>('TorusKnot');
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialType>(Object.keys(Shaders)[2] as MaterialType);
   const [useShaders, setUseShaders] = useState(false);
+  const { scene } = useGLTF(avatarGbl);
 
   const geometries: Record<GeometryType, React.ElementType> = {
     TorusKnot: TorusKnot,
@@ -66,7 +43,7 @@ const App: React.FC = () => {
           value={selectedMaterial}
           onChange={(value) => setSelectedMaterial(value as MaterialType)}
         />
-        <ToggleButton onClick={() => setUseShaders((prev) => !prev)} label="Toggle Shaders" />
+        <Checkbox label="Shaders" setValue={setUseShaders} />
       </div>
       <Canvas>
         {/* Lighting */}
@@ -79,11 +56,7 @@ const App: React.FC = () => {
           material={selectedMaterial}
         />
 
-        {/* <mesh castShadow receiveShadow >
-          <torusKnotGeometry args={[0.5, 0.15, 128, 128]} />
-          <meshStandardMaterial />
-          <Outlines thickness={10} color={"black"} />
-        </mesh> */}
+        <GlbAssetProps url={avatarGbl}/>
 
         {/* Controls */}
         <OrbitControls />
