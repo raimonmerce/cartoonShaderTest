@@ -9,13 +9,6 @@ interface AnimatedGeometryProps {
 }
 
 const AnimatedGeometry: React.FC<AnimatedGeometryProps> = ({ geometry, material }) => {
-  const ref = useRef<any>();
-
-  useFrame(({ clock }) => {
-    if (ref.current) {
-      ref.current.uTime = clock.getElapsedTime();
-    }
-  });
 
   const GeometryComponent = geometry;
 
@@ -23,7 +16,6 @@ const AnimatedGeometry: React.FC<AnimatedGeometryProps> = ({ geometry, material 
     <GeometryComponent args={[1, 0.4, 128, 32]}>
       {/* @ts-ignore */}
       {React.createElement(material, {
-        ref: ref,
         attach: 'material',
         uColor: new THREE.Color(0xff6600),
       })}
@@ -31,8 +23,7 @@ const AnimatedGeometry: React.FC<AnimatedGeometryProps> = ({ geometry, material 
     </GeometryComponent>
   );
 
-  // Log the component
-  console.log('AnimatedGeometry Component:', component);
+  //console.log('AnimatedGeometry Component:', component);
 
   return component;
 };

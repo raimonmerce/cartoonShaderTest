@@ -8,8 +8,6 @@ import cosVert from "./fragment/CosEffectFrag.glsl";
 import shadowVert from "./fragment/ShadowFrag.glsl"; 
 import cartoonVert from "./fragment/CartoonFrag.glsl"; 
 
-console.log("standardVert", standardVert);
-
 export const SinShader = shaderMaterial(
   {
     uTime: 0,
