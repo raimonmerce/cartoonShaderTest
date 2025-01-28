@@ -13,9 +13,12 @@ const AnimatedGeometry: React.FC<AnimatedGeometryProps> = ({ geometry, material,
 
   const GeometryComponent = geometry;
   
-
   const component = (
-    <GeometryComponent args={[1, 0.4, 128, 32]}>
+      <GeometryComponent 
+      args={[1, 0.4, 128, 32]}         
+      castShadow 
+      receiveShadow 
+    >
       {/* @ts-ignore */}
       {React.createElement(material, {
         attach: 'material',

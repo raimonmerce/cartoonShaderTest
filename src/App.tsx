@@ -9,6 +9,7 @@ import RotatingLightSlider from './components/RotatingLightSlider';
 import { EffectComposer, Bloom} from "@react-three/postprocessing";
 import * as Shaders from './shaders/shaders';
 import avatarGbl from './assets/avatar.glb';
+import sofaGbl from './assets/sofa.glb';
 import * as THREE from 'three';
 
 Object.entries(Shaders).forEach(([key, shader]) => {
@@ -35,8 +36,9 @@ const App: React.FC = () => {
 
   return (
     <div style={{ width: '100vw', height: '100vh', background: 'linear-gradient(to bottom, #ffff00, #2a5298)' }}>
-      <Canvas>
-        <pointLight ref={lightRef} intensity={1} color="white" />
+      <Canvas shadows>
+        <ambientLight intensity={1.0} />
+        <directionalLight angle={0.2} intensity={5} castShadow position={lightPosition} />
         {/* Scene Contents */}
         <AnimatedGeometry
           geometry={geometries[selectedGeometry]}
@@ -48,6 +50,30 @@ const App: React.FC = () => {
           url={'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/suzanne-high-poly/model.gltf'} 
           lightPosition={lightPosition}
         />
+
+        <mesh 
+          castShadow 
+          receiveShadow 
+          position={[-3, 0, 0]}
+        >
+          <boxGeometry />
+          <meshStandardMaterial color="red" />
+            <>
+              <Outlines thickness={9} color="aquamarine" />
+              <Outlines thickness={9} color="#177e89" />
+              <Outlines thickness={9} color="#ff9770" />
+            </>
+        </mesh>
+
+        <mesh 
+          position={[0, -1.5, 0]} 
+          scale={1000} 
+          rotation={[-Math.PI / 2, 0, 0]} 
+          receiveShadow
+        >
+          <planeGeometry />
+          <shadowMaterial />
+        </mesh>
 
         {/* Controls */}
         <OrbitControls />
