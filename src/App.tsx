@@ -5,6 +5,7 @@ import Dropdown from './components/Dropdown';
 import Checkbox from './components/Checkbox';
 import AnimatedGeometry from './components/AnimatedGeometry';
 import GlbAsset from './components/GlbAsset';
+import ComplexGlbAsset from './components/ComplexGlbAsset';
 import RotatingLightSlider from './components/RotatingLightSlider';
 import { EffectComposer, Bloom} from "@react-three/postprocessing";
 import * as Shaders from './shaders/shaders';
@@ -44,12 +45,18 @@ const App: React.FC = () => {
           geometry={geometries[selectedGeometry]}
           material={selectedMaterial}
           lightPosition={lightPosition}
+          args={[1, 0.4, 128, 32]}
         />
 
         <GlbAsset 
           url={'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/suzanne-high-poly/model.gltf'} 
           lightPosition={lightPosition}
         />
+
+        {/* <ComplexGlbAsset 
+          url={sofaGbl} 
+          lightPosition={lightPosition}
+        /> */}
 
         <mesh 
           castShadow 
@@ -64,6 +71,14 @@ const App: React.FC = () => {
               <Outlines thickness={9} color="#ff9770" />
             </>
         </mesh>
+
+        <TorusKnot
+          name="meshStandardMaterial"
+          position={[6, 0, 0]}
+          material={new THREE.MeshToonMaterial({color: "red"})}
+        >
+          <Outlines thickness={5} color="black" />
+        </TorusKnot>
 
         <mesh 
           position={[0, -1.5, 0]} 
