@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Canvas, extend, useFrame } from '@react-three/fiber';
-import { OrbitControls, TorusKnot, Box, Sphere, Stats, useGLTF, Outlines } from '@react-three/drei';
+import { Canvas, extend } from '@react-three/fiber';
+import { OrbitControls, TorusKnot, Box, Sphere, Stats } from '@react-three/drei';
 import Dropdown from './components/Dropdown';
 import Checkbox from './components/Checkbox';
 import AnimatedGeometry from './components/AnimatedGeometry';
@@ -28,15 +28,12 @@ const App: React.FC = () => {
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialType>(Object.keys(Shaders)[2] as MaterialType);
   const [useShaders, setUseShaders] = useState(false);
   const [lightPosition, setLightPosition] = useState(new THREE.Vector3(2,2,2));
-  const { scene } = useGLTF(avatarGbl);
 
   const geometries: Record<GeometryType, React.ElementType> = {
     TorusKnot: TorusKnot,
     Box: Box,
     Sphere: Sphere,
   };
-
-  const lightRef = useRef<THREE.PointLight>(null);
 
   return (
     <div style={{ width: '100vw', height: '100vh', background: 'linear-gradient(to bottom, #ffff00, #2a5298)' }}>

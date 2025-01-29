@@ -1,6 +1,6 @@
 import React, { } from 'react';
-import { useGLTF, Clone } from '@react-three/drei';
-import { extend  } from '@react-three/fiber';
+import { useGLTF } from '@react-three/drei';
+import { extend } from '@react-three/fiber';
 import { Outlines } from '@react-three/drei';
 import {ShadowToonShader} from '../shaders/shaders';
 import * as THREE from 'three';
@@ -23,21 +23,10 @@ const ComplexGlbAsset: React.FC<ComplexGlbAssetProps> = ({
     const { nodes, scene } = useGLTF(url)
 
     const getToonMaterials = (material: THREE.Material) => {
-      if (!material.map && !material.transparent){
-        material = new THREE.MeshToonMaterial({
-          color: material.color,
-        });
-      } else {
-        //console.log("Material", material)
-        material.side = THREE.DoubleSide;
-        material.depthWrite = material.transparent ? true : material.depthWrite;
-        if (material.morphNormals) {
-          console.log("morphNormals", material)
-          material.morphNormals = true;
-        }
-      }
-
-      return material;
+      return new THREE.MeshToonMaterial({
+        map: material.map,
+        color: material.color,
+      });
     };
 
     const iteratTree = (nodes: any) => {
