@@ -5,12 +5,15 @@ import Dropdown from './components/Dropdown';
 import Checkbox from './components/Checkbox';
 import AnimatedGeometry from './components/AnimatedGeometry';
 import GlbAsset from './components/GlbAsset';
+import Avatar from './components/Avatar';
+import ShadowFloor from './components/ShadowFloor';
 import ComplexGlbAsset from './components/ComplexGlbAsset';
 import RotatingLightSlider from './components/RotatingLightSlider';
 import { EffectComposer, Bloom} from "@react-three/postprocessing";
 import * as Shaders from './shaders/shaders';
-import avatarGbl from './assets/avatar.glb';
+import avatarGbl from './assets/avatar2.glb';
 import sofaGbl from './assets/sofa.glb';
+import sceneGbl from './assets/office.glb';
 import * as THREE from 'three';
 
 Object.entries(Shaders).forEach(([key, shader]) => {
@@ -39,59 +42,27 @@ const App: React.FC = () => {
     <div style={{ width: '100vw', height: '100vh', background: 'linear-gradient(to bottom, #ffff00, #2a5298)' }}>
       <Canvas shadows>
         <ambientLight intensity={1.0} />
-        <directionalLight angle={0.2} intensity={5} castShadow position={lightPosition} />
-        {/* Scene Contents */}
-        <AnimatedGeometry
-          geometry={geometries[selectedGeometry]}
-          material={selectedMaterial}
-          lightPosition={lightPosition}
-          args={[1, 0.4, 128, 32]}
-        />
-
-        <GlbAsset 
-          url={'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/suzanne-high-poly/model.gltf'} 
-          lightPosition={lightPosition}
-        />
-
-        {/* <ComplexGlbAsset 
-          url={sofaGbl} 
-          lightPosition={lightPosition}
-        /> */}
-
-        <mesh 
+        <directionalLight 
+          angle={0.2} 
+          intensity={5} 
           castShadow 
-          receiveShadow 
-          position={[-3, 0, 0]}
-        >
-          <boxGeometry />
-          <meshStandardMaterial color="red" />
-            <>
-              <Outlines thickness={9} color="aquamarine" />
-              <Outlines thickness={9} color="#177e89" />
-              <Outlines thickness={9} color="#ff9770" />
-            </>
-        </mesh>
+          position={lightPosition}
+          shadow-bias={-0.001}  
+        />
 
-        <TorusKnot
-          name="meshStandardMaterial"
-          position={[6, 0, 0]}
-          material={new THREE.MeshToonMaterial({color: "red"})}
-        >
-          <Outlines thickness={5} color="black" />
-        </TorusKnot>
+        <ComplexGlbAsset 
+          url={sceneGbl} 
+          lightPosition={lightPosition}
+        />
 
-        <mesh 
-          position={[0, -1.5, 0]} 
-          scale={1000} 
-          rotation={[-Math.PI / 2, 0, 0]} 
-          receiveShadow
-        >
-          <planeGeometry />
-          <shadowMaterial />
-        </mesh>
+        <ShadowFloor/>
 
         {/* Controls */}
-        <OrbitControls />
+        <OrbitControls 
+          enableZoom={true} 
+          minDistance={-Infinity}
+          maxDistance={Infinity} 
+        />
 
         {/* Stats */}
         <Stats />
@@ -108,7 +79,7 @@ const App: React.FC = () => {
         )}
       </Canvas>
       <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 100 }}>
-        <Dropdown
+        {/* <Dropdown
           label="Geometry"
           options={Object.keys(geometries)}
           value={selectedGeometry}
@@ -119,7 +90,7 @@ const App: React.FC = () => {
           options={Object.keys(Shaders)}
           value={selectedMaterial}
           onChange={(value) => setSelectedMaterial(value as MaterialType)}
-        />
+        /> */}
         <Checkbox label="Shaders" setValue={setUseShaders} />
         <RotatingLightSlider setLightPosition={setLightPosition} />
       </div>

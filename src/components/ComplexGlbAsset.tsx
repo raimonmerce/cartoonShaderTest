@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
+import React, { } from 'react';
 import { useGLTF, Clone } from '@react-three/drei';
-import { useFrame, extend  } from '@react-three/fiber';
+import { extend  } from '@react-three/fiber';
 import { Outlines } from '@react-three/drei';
 import {ShadowToonShader} from '../shaders/shaders';
 import * as THREE from 'three';
@@ -13,31 +13,72 @@ interface ComplexGlbAssetProps {
 }
 
 const ComplexGlbAsset: React.FC<ComplexGlbAssetProps> = ({ url, lightPosition }) => {
-    const { nodes, materials } = useGLTF(url)
-    const materialRef = useRef<any>();
-    // Update uniform 'uTime' for animation
-    useFrame(({ clock }) => {
-      if (materialRef.current) {
-        materialRef.current.uTime = clock.getElapsedTime();
+    const { nodes, scene } = useGLTF(url)
+
+    const getToonMaterials = (material: THREE.Material) => {
+      if (!material.map && !material.transparent){
+        material = new THREE.MeshToonMaterial({
+          color: material.color,
+        });
+      } else {
+        console.log("Material", material)
+        material.side = THREE.DoubleSide;
+        material.depthWrite = material.transparent ? true : material.depthWrite;
       }
-    });
 
-    const material =  new ShadowToonShader();
-    material.uniforms.uColor = {value: new THREE.Color(0xff00ff)};
-    material.uniforms.uLightPosition = {value: lightPosition};
-    //console.log(material)
+      return material;
+    };
 
-    return (
-      <mesh 
-        castShadow 
-        receiveShadow 
-        geometry={nodes.Suzanne.geometry}
-        material={material}
-        position={[3, -1, 0]}
+    const iteratTree = (nodes: any) => {
+      return (
+        <>
+          {Object.entries(nodes).map(([key, node]) => {
+            if (node instanceof THREE.Mesh) {
+              if (node.material.transparent) return; //Temp
+              return (
+                <mesh 
+                  key={key} 
+                  castShadow 
+                  receiveShadow 
+                  geometry={node.geometry} 
+                  material={getToonMaterials(node.material)}
+                  position={node.position}
+                  scale={node.scale}
+                  rotation={node.rotation}  
+                >
+                  <Outlines thickness={1} color="black" />
+                </mesh>
+              );
+            } else if (node instanceof THREE.Object3D) {
+              return (
+                <group 
+                  position={node.position}
+                  scale={node.scale}
+                  rotation={node.rotation} 
+                >
+                  {iteratTree(node.children)}
+                </group>
+              )
+            }
+            return null;
+          })}
+        </>
+      )
+    };
+
+    console.log(nodes, scene)
+
+    const clonedComponent = (
+      <group
+        position={scene.position}
+        scale={scene.scale}
+        rotation={scene.rotation} 
       >
-        <Outlines thickness={5} angle={0} />
-      </mesh>
+        {iteratTree(scene.children)}
+      </group>
     )
+    console.log("clonedComponent", clonedComponent)
+    return clonedComponent;
 };
 
 export default ComplexGlbAsset
