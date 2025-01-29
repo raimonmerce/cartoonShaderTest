@@ -9,10 +9,17 @@ extend({ ShadowToonShader });
 
 interface ComplexGlbAssetProps {
     url: string;
-    lightPosition: THREE.Vector3;
+    position?: [number, number, number];
+    rotation?: [number, number, number];
+    scale?: [number, number, number];
 }
 
-const ComplexGlbAsset: React.FC<ComplexGlbAssetProps> = ({ url, lightPosition }) => {
+const ComplexGlbAsset: React.FC<ComplexGlbAssetProps> = ({ 
+  url, 
+  position = [0, 0, 0],
+  rotation = [0, 0, 0],
+  scale = [1, 1, 1],
+}) => {
     const { nodes, scene } = useGLTF(url)
 
     const getToonMaterials = (material: THREE.Material) => {
@@ -21,9 +28,13 @@ const ComplexGlbAsset: React.FC<ComplexGlbAssetProps> = ({ url, lightPosition })
           color: material.color,
         });
       } else {
-        console.log("Material", material)
+        //console.log("Material", material)
         material.side = THREE.DoubleSide;
         material.depthWrite = material.transparent ? true : material.depthWrite;
+        if (material.morphNormals) {
+          console.log("morphNormals", material)
+          material.morphNormals = true;
+        }
       }
 
       return material;
@@ -67,14 +78,19 @@ const ComplexGlbAsset: React.FC<ComplexGlbAssetProps> = ({ url, lightPosition })
     };
 
     console.log(nodes, scene)
-
     const clonedComponent = (
       <group
-        position={scene.position}
-        scale={scene.scale}
-        rotation={scene.rotation} 
+        position={position}
+        scale={scale}
+        rotation={rotation}
       >
-        {iteratTree(scene.children)}
+        <group
+          position={scene.position}
+          scale={scene.scale}
+          rotation={scene.rotation}
+        >
+          {iteratTree(scene.children)}
+        </group>
       </group>
     )
     console.log("clonedComponent", clonedComponent)

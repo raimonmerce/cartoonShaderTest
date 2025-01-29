@@ -11,7 +11,7 @@ import ComplexGlbAsset from './components/ComplexGlbAsset';
 import RotatingLightSlider from './components/RotatingLightSlider';
 import { EffectComposer, Bloom} from "@react-three/postprocessing";
 import * as Shaders from './shaders/shaders';
-import avatarGbl from './assets/avatar2.glb';
+import avatarGbl from './assets/avatar3.glb';
 import sofaGbl from './assets/sofa.glb';
 import sceneGbl from './assets/office.glb';
 import * as THREE from 'three';
@@ -51,8 +51,17 @@ const App: React.FC = () => {
         />
 
         <ComplexGlbAsset 
+          url={avatarGbl} 
+          position={[0,-1.5,0]}
+          rotation={[0 ,0,0]}
+          scale={[3, 3, 3]}
+        />
+
+        <ComplexGlbAsset 
           url={sceneGbl} 
-          lightPosition={lightPosition}
+          position={[8,-1.5,8]}
+          rotation={[0, -Math.PI/2, 0]}
+          scale={[4,4,4]}
         />
 
         <ShadowFloor/>
